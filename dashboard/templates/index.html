@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Twin | Blockchain + IoT Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff9d;
+            --accent: #00d4ff;
+            --bg: #0a0a0a;
+            --card: #111111;
+            --text: #e0f0ff;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 3px solid var(--primary);
+            padding: 1.2rem 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.15);
+        }
+        
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 12px rgba(0, 255, 157, 0.4);
+        }
+        
+        .live-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #00ff9d;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 255, 157, 0.12);
+            margin: 25px;
+            padding: 25px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th {
+            background: #1a1a2e;
+            color: var(--accent);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #222233;
+        }
+        
+        tr {
+            transition: all 0.3s ease;
+        }
+        
+        tr:hover {
+            background: #1e1e35;
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+        
+        tr:nth-child(even) {
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(90deg, #00ff9d, #00d4ff);
+            color: #000;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 157, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #555577;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        code {
+            background: #1a1a2e;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
+            <div>
+                <span class="title neon-text"><i class="fas fa-shield-alt"></i> Cyber-Twin Router</span>
+                <span style="margin-left: 12px; color: #8899bb;">Blockchain • IoT • Honeypot • Digital Twin</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span id="statusBadge" class="status-badge">
+                    <span class="live-dot"></span>
+                    LIVE
+                </span>
+                
+                <button onclick="manualRefresh()" class="refresh-btn">
+                    <i class="fas fa-sync"></i> Refresh Now
+                </button>
+                
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: #ccc;">
+                    <input type="checkbox" id="autoRefresh" checked onchange="toggleAutoRefresh()">
+                    Auto-refresh (5s)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 style="margin: 0 0 15px 0; color: var(--accent); font-size: 1.4rem;">
+            📍 Contract Information
+        </h2>
+        <p><strong>Contract Address:</strong> <code id="contractAddr">{{ contract_address }}</code></p>
+        <p><strong>Blockchain Status:</strong> <span id="statusText">{{ status }}</span></p>
+    </div>
+
+    <div class="card">
+        <h2 style="margin: 0 0 15px 0; color: var(--accent); font-size: 1.4rem;">
+            📡 Live Cyber Events & IoT Attacks
+        </h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Event Type</th>
+                    <th>Attacker IP</th>
+                    <th>IoT Device</th>
+                    <th>Details</th>
+                    <th>Tx Hash</th>
+                </tr>
+            </thead>
+            <tbody id="eventsTable">
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.timestamp }}</td>
+                    <td><strong>{{ event.eventType }}</strong></td>
+                    <td>{{ event.attackerIP }}</td>
+                    <td>{{ event.iotDevice }}</td>
+                    <td>{{ event.details }}</td>
+                    <td><code>{{ event.txHash }}</code></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        Master's End-Semester Project 2026 • Digital Twin Router + IoT Sensors + Honeypot + Blockchain + Cloud Platform<br>
+        Last updated: <span id="lastUpdated">Just now</span>
+    </div>
+
+    <script>
+        let autoRefreshInterval = null;
+
+        function toggleAutoRefresh() {
+            if (document.getElementById('autoRefresh').checked) {
+                autoRefreshInterval = setInterval(manualRefresh, 5000);
+            } else {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+
+        function manualRefresh() {
+            fetch('/events')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('statusText').innerHTML = 
+                        data.status === 'connected' ? 
+                        '<span style="color:#00ff9d">🟢 Blockchain Connected • Real-time</span>' : 
+                        '<span style="color:#ffaa00">⚠️ Waiting for contract deployment...</span>';
+                    
+                    let html = '';
+                    if (data.events && data.events.length > 0) {
+                        data.events.forEach(event => {
+                            html += `
+                                <tr>
+                                    <td>${event.timestamp}</td>
+                                    <td><strong>${event.eventType}</strong></td>
+                                    <td>${event.attackerIP}</td>
+                                    <td>${event.iotDevice}</td>
+                                    <td>${event.details}</td>
+                                    <td><code>${event.txHash}</code></td>
+                                </tr>`;
+                        });
+                    } else {
+                        html = `<tr><td colspan="6" style="text-align:center; padding:40px; color:#666;">No events yet.<br>Run <code>python scripts/simulate-iot-attack.py</code> to generate live logs</td></tr>`;
+                    }
+                    document.getElementById('eventsTable').innerHTML = html;
+                    document.getElementById('lastUpdated').textContent = 'Just now';
+                })
+                .catch(() => {
+                    document.getElementById('statusText').innerHTML = '❌ Connection error';
+                });
+        }
+
+        window.onload = () => {
+            manualRefresh();
+            toggleAutoRefresh();
+        };
+    </script>
+</body>
+</html>
