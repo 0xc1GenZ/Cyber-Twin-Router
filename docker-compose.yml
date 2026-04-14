@@ -59,14 +59,25 @@ services:
       retries: 3
     restart: unless-stopped
 
-  blockchain:
-    image: trufflesuite/ganache:latest
-    container_name: ganache-blockchain
-    ports:
-      - "8545:8545"
-    command: [ "--chain.chainId", "1337", "--wallet.seed", "cyber-twin-seed", "--server.port", "8545", "--miner.blockTime", "0" ]
-    networks:
-      - cybernet
+  ganache-blockchain:
+  image: trufflesuite/ganache:latest
+  container_name: ganache-blockchain
+  ports:
+    - "8545:8545"
+  command: >
+    --host 0.0.0.0
+    --port 8545
+    --deterministic
+    --accounts 10
+    --mnemonic "cyber twin router iot blockchain honeypot dev seed phrase"
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:8545 || exit 1"]
+    interval: 10s
+    timeout: 10s
+    retries: 10
+    start_period: 20s   # <-- give Ganache time to boot
+  networks:
+    - cybernet
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8545" ]
       interval: 5s
