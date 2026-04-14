@@ -1,13 +1,19 @@
+# ================================================
+# Cyber-Twin Router — docker-compose.yml
+# Professional Fixed v4.0
+# ================================================
 
 services:
+
+  # ── 1. Virtual Router (FRRouting) ─────────────────────────────────────────
   router-twin:
     image: quay.io/frrouting/frr:10.5.3
     container_name: router-twin
     ports:
-      - "22:22"
-      - "23:23"
-      - "80:80"
-      - "443:443"
+      - "2200:22"      # SSH  (avoids conflict with WSL host SSH on port 22)
+      - "2300:23"      # Telnet
+      - "8000:80"      # HTTP (avoids conflict with host services)
+      - "4430:443"     # HTTPS
     volumes:
       - ./configs/frr:/etc/frr
     command: /sbin/init
@@ -15,24 +21,64 @@ services:
       - cybernet
     restart: unless-stopped
 
-  honeypot:
-    build:
-      context: .
-      dockerfile: Dockerfile.honeypot
-    container_name: router-honeypot
+  # ── 2. MQTT Broker (Mosquitto) ─────────────────────────────────────────────
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: mqtt-broker
     ports:
-      - "2222:2222"
-      - "2323:2323"
-      - "8080:8080"
+      - "1883:1883"
+      - "9001:9001"
     volumes:
-      - ./configs/cowrie:/opt/cowrie/etc
-    depends_on:
-      blockchain:
-        condition: service_healthy
+      - ./configs/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      - cybernet
+    restart: unless-stopped
+    # FIX: iot-simulator depends on this with service_healthy — healthcheck is required
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_pub -h localhost -p 1883 -t healthcheck -m ping -q 0 2>/dev/null && echo ok || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── 3. Ganache Blockchain ──────────────────────────────────────────────────
+  # FIX: Entire block was mis-indented (image/ports/command were at root level)
+  # FIX: Duplicate healthcheck blocks merged into one
+  # FIX: curl replaced with node one-liner (curl not installed in Ganache image)
+  ganache-blockchain:
+    image: trufflesuite/ganache:latest
+    container_name: ganache-blockchain
+    ports:
+      - "8545:8545"
+    command: >
+      --host 0.0.0.0
+      --port 8545
+      --deterministic
+      --accounts 10
+      --mnemonic "cyber twin router iot blockchain honeypot dev seed phrase"
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - |
+          node -e "
+            const h = require('http');
+            const body = JSON.stringify({jsonrpc:'2.0',method:'net_version',params:[],id:1});
+            const req = h.request(
+              {port:8545,method:'POST',headers:{'content-type':'application/json','content-length':Buffer.byteLength(body)}},
+              res => process.exit(res.statusCode === 200 ? 0 : 1)
+            );
+            req.on('error', () => process.exit(1));
+            req.end(body);
+          "
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
     networks:
       - cybernet
     restart: unless-stopped
 
+  # ── 4. IoT Simulator ──────────────────────────────────────────────────────
   iot-simulator:
     build:
       context: .
@@ -45,45 +91,27 @@ services:
       - cybernet
     restart: unless-stopped
 
-  mqtt-broker:
-    image: eclipse-mosquitto:2
-    container_name: mqtt-broker
+  # ── 5. Honeypot (Cowrie) ──────────────────────────────────────────────────
+  honeypot:
+    build:
+      context: .
+      dockerfile: Dockerfile.honeypot
+    container_name: router-honeypot
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - "2222:2222"
+      - "2323:2323"
+      - "8080:8080"
     volumes:
-      - ./configs/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./configs/cowrie:/opt/cowrie/etc
+    # FIX: was `blockchain` — corrected to actual service name `ganache-blockchain`
+    depends_on:
+      ganache-blockchain:
+        condition: service_healthy
     networks:
       - cybernet
     restart: unless-stopped
 
-  ganache-blockchain:
-  image: trufflesuite/ganache:latest
-  container_name: ganache-blockchain
-  ports:
-    - "8545:8545"
-  command: >
-    --host 0.0.0.0
-    --port 8545
-    --deterministic
-    --accounts 10
-    --mnemonic "cyber twin router iot blockchain honeypot dev seed phrase"
-  healthcheck:
-    test: ["CMD-SHELL", "wget -qO- http://localhost:8545 || exit 1"]
-    interval: 10s
-    timeout: 10s
-    retries: 10
-    start_period: 20s   # <-- give Ganache time to boot
-  networks:
-    - cybernet
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8545" ]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-
+  # ── 6. Cloud Dashboard ────────────────────────────────────────────────────
   cloud-dashboard:
     build:
       context: .
@@ -91,13 +119,15 @@ services:
     container_name: cloud-dashboard
     ports:
       - "5000:5000"
+    # FIX: was `blockchain` — corrected to actual service name `ganache-blockchain`
     depends_on:
-      blockchain:
+      ganache-blockchain:
         condition: service_healthy
     networks:
       - cybernet
     restart: unless-stopped
 
+# ── Network ────────────────────────────────────────────────────────────────
 networks:
   cybernet:
     driver: bridge
