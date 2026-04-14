@@ -104,7 +104,19 @@ wait_for_healthy() {
     return 1
 }
 
-wait_for_healthy "ganache-blockchain" 90
+# Ganache has no healthcheck — wait for port to be open instead
+info "Waiting for ganache-blockchain port 8545..."
+for i in $(seq 1 30); do
+    if docker exec ganache-blockchain wget -qO- \
+        --post-data='{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}' \
+        --header='Content-Type:application/json' \
+        http://localhost:8545 2>/dev/null | grep -q result; then
+        success "ganache-blockchain is ready."
+        break
+    fi
+    echo -ne "   ⏱  ${i}s / 30s — waiting for ganache...\r"
+    sleep 2
+done
 wait_for_healthy "mqtt-broker"        30
 
 # ── 7. Deploy smart contract ─────────────────────────────────────────────────
