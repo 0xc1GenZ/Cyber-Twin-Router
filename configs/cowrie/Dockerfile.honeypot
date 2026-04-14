@@ -1,0 +1,8 @@
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+RUN git clone https://github.com/cowrie/cowrie.git /opt/cowrie
+WORKDIR /opt/cowrie
+RUN pip install --no-cache-dir -r requirements.txt web3
+COPY configs/cowrie/ /opt/cowrie/etc/
+COPY scripts/log-to-blockchain.py /opt/cowrie/
+CMD ["sh", "-c", "bin/cowrie start & python3 /opt/cowrie/log-to-blockchain.py"]

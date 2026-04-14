@@ -1,0 +1,15 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Copy entire project (your Flask code should be somewhere in the root)
+COPY . /app
+
+# Install dependencies
+RUN pip install --no-cache-dir flask paho-mqtt web3 requests
+
+EXPOSE 5000
+
+# IMPORTANT: Change "app.py" below to your actual main Flask file
+# Common names: app.py, main.py, dashboard.py, run.py
+CMD ["python3", "app.py"]
