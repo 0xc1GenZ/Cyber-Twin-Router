@@ -1,8 +1,7 @@
 #!/bin/bash
-# ================================================
+# ================================================#
 # Cyber-Twin Router + IoT + Blockchain + Cloud
-# deploy-all.sh — Professional Fixed v4.0
-# ================================================
+# ================================================#
 
 set -euo pipefail
 
@@ -101,17 +100,28 @@ echo -e "\n${BOLD}⏳ Waiting for services to become healthy...${RESET}"
 
 wait_for_healthy() {
     local service="$1"
-    local max_wait="${2:-90}"   # seconds
+    local max_wait="${2:-90}"
     local elapsed=0
     local interval=5
 
     info "Waiting for ${service}..."
     while [ $elapsed -lt $max_wait ]; do
-        STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$service" 2>/dev/null || echo "starting")
+        STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$service" 2>/dev/null || echo "none")
+
+        # If no healthcheck defined, fall back to checking running state
+        if [ "$STATUS" = "none" ] || [ -z "$STATUS" ]; then
+            RUN=$(docker inspect --format='{{.State.Running}}' "$service" 2>/dev/null || echo "false")
+            if [ "$RUN" = "true" ]; then
+                success "${service} is running (no healthcheck defined)."
+                return 0
+            fi
+        fi
+
         if [ "$STATUS" = "healthy" ]; then
             success "${service} is healthy."
             return 0
         fi
+
         sleep $interval
         elapsed=$((elapsed + interval))
         echo -ne "   ⏱  ${elapsed}s / ${max_wait}s — status: ${STATUS}\r"
