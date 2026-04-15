@@ -1,4 +1,11 @@
-# 🚀 Cyber-Twin Router
+<h1 align="center">
+  <br>
+  <a href="https://github.com/0xc1GenZ/Cyber-Twin-Router"><img src="https://github.com/user-attachments/assets/821fcd1d-59a7-4704-b46a-c91119c31440" width=300 height=300 alt="Forensic"></a>
+  <br>
+  🍯 Cyber-Twin Router 🖧
+  <h4 align="center">Honeypot is proof that the best defense is pretending to be the dumbest server on the internet</h4>
+  <br>
+</h1>
 
 **Digital Twin Router + IoT Simulation + Honeypot + Blockchain Logging + Cloud Real-Time Attack Dashboard**
 
