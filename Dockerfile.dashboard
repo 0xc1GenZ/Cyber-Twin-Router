@@ -2,14 +2,21 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy entire project (your Flask code should be somewhere in the root)
-COPY . /app
+# FIX: Install gcc + build tools BEFORE pip install.
+# web3 pulls in lru-dict which has a C extension that needs compilation.
+# python:3.12-slim ships with NO compiler — this was the build failure.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN pip install --no-cache-dir flask paho-mqtt web3 requests
-
+# Copy dashboard app files
+COPY dashboard/ /app/
+RUN pip install --no-cache-dir flask paho-mqtt "web3==6.15.0" requests
 EXPOSE 5000
-
-# IMPORTANT: Change "app.py" below to your actual main Flask file
-# Common names: app.py, main.py, dashboard.py, run.py
 CMD ["python3", "app.py"]
+
+# Install Python deps (lru-dict will now compile successfully)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir flask paho-mqtt web3 requests
+
+
