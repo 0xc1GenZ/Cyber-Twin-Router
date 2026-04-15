@@ -12,264 +12,388 @@
             --bg: #0a0a0a;
             --card: #111111;
             --text: #e0f0ff;
+            --warn: #ffaa00;
+            --danger: #ff4444;
         }
-        
         * { box-sizing: border-box; }
-        
         body {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
             color: var(--text);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0; padding: 0; min-height: 100vh;
         }
-        
         .navbar {
-            background: rgba(10, 10, 20, 0.95);
+            background: rgba(10,10,20,0.95);
             backdrop-filter: blur(12px);
             border-bottom: 3px solid var(--primary);
             padding: 1.2rem 2.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.15);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,255,157,0.15);
         }
-        
         .title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-            color: var(--primary);
+            font-size: 2rem; font-weight: 700;
+            letter-spacing: -1px; color: var(--primary);
             text-shadow: 0 0 15px var(--primary);
         }
-        
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            background: rgba(0, 255, 157, 0.1);
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; border-radius: 50px;
+            font-weight: 600; font-size: 0.95rem;
+            background: rgba(0,255,157,0.1);
             border: 1px solid var(--primary);
-            box-shadow: 0 0 12px rgba(0, 255, 157, 0.4);
+            box-shadow: 0 0 12px rgba(0,255,157,0.4);
         }
-        
         .live-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #00ff9d;
-            border-radius: 50%;
+            width: 10px; height: 10px;
+            background: #00ff9d; border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
-        
         .card {
-            background: var(--card);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 255, 157, 0.12);
-            margin: 25px;
-            padding: 25px;
-            border: 1px solid rgba(0, 212, 255, 0.1);
+            background: var(--card); border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,255,157,0.08);
+            margin: 20px 25px; padding: 22px 25px;
+            border: 1px solid rgba(0,212,255,0.1);
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        /* ── Stat bar ── */
+        .stat-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px; margin: 0 25px 0;
         }
-        
+        .stat-box {
+            background: #0d0d1a;
+            border: 1px solid rgba(0,212,255,0.15);
+            border-radius: 12px; padding: 14px 18px;
+        }
+        .stat-label { font-size: 0.75rem; color: #6677aa; text-transform: uppercase; letter-spacing: .08em; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 4px; }
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.warn   { color: var(--warn); }
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th {
-            background: #1a1a2e;
-            color: var(--accent);
-            padding: 16px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            background: #1a1a2e; color: var(--accent);
+            padding: 14px 12px; text-align: left;
+            font-weight: 600; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        
-        td {
-            padding: 16px 12px;
-            border-bottom: 1px solid #222233;
+        td { padding: 13px 12px; border-bottom: 1px solid #1a1a2e; font-size: 0.93rem; }
+        tr { transition: background 0.2s; }
+        tr:hover { background: #1e1e35; }
+        /* ── Badges ── */
+        .badge {
+            display: inline-block; padding: 3px 10px;
+            border-radius: 20px; font-size: 0.78rem; font-weight: 600;
         }
-        
-        tr {
-            transition: all 0.3s ease;
+        .badge-red    { background: rgba(255,68,68,0.18);  color: #ff6666; border: 1px solid #ff444433; }
+        .badge-orange { background: rgba(255,170,0,0.15);  color: #ffbb44; border: 1px solid #ffaa0033; }
+        .badge-blue   { background: rgba(0,212,255,0.12);  color: #44ddff; border: 1px solid #00d4ff33; }
+        .badge-green  { background: rgba(0,255,157,0.12);  color: #00ff9d; border: 1px solid #00ff9d33; }
+        .badge-purple { background: rgba(170,68,255,0.15); color: #cc88ff; border: 1px solid #aa44ff33; }
+        /* ── Buttons ── */
+        .btn {
+            border: none; padding: 10px 22px; border-radius: 8px;
+            cursor: pointer; font-weight: 700; transition: all 0.2s;
         }
-        
-        tr:hover {
-            background: #1e1e35;
-            transform: scale(1.01);
-            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        .btn-primary {
+            background: linear-gradient(90deg, #00ff9d, #00d4ff); color: #000;
         }
-        
-        tr:nth-child(even) {
-            background: rgba(255,255,255,0.02);
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,255,157,0.4); }
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center; padding: 50px 20px; color: #555577;
         }
-        
-        .refresh-btn {
-            background: linear-gradient(90deg, #00ff9d, #00d4ff);
-            color: #000;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.3s ease;
+        .empty-state .big-icon { font-size: 3rem; margin-bottom: 12px; }
+        .empty-state code {
+            background: #1a1a2e; padding: 4px 10px;
+            border-radius: 6px; font-size: 0.9rem; color: var(--accent);
         }
-        
-        .refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 255, 157, 0.4);
+        /* ── Error bar ── */
+        .error-bar {
+            margin: 0 25px 10px; padding: 10px 18px;
+            background: rgba(255,68,68,0.08); border: 1px solid rgba(255,68,68,0.3);
+            border-radius: 10px; font-size: 0.85rem; color: #ff8888;
+            display: none;
         }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #555577;
-            font-size: 0.9rem;
-            margin-top: 20px;
+        .error-bar.show { display: block; }
+        /* ── New-row flash ── */
+        @keyframes rowFlash {
+            0%   { background: rgba(0,255,157,0.15); }
+            100% { background: transparent; }
         }
-        
-        .neon-text {
-            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
-        }
-        
+        .new-row { animation: rowFlash 1.5s ease-out; }
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            0%,100% { opacity: 1; }
+            50%      { opacity: 0.3; }
         }
-        
         code {
-            background: #1a1a2e;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9rem;
+            background: #1a1a2e; padding: 3px 8px;
+            border-radius: 4px; font-family: monospace; font-size: 0.88rem;
+        }
+        .footer {
+            text-align: center; padding: 20px;
+            color: #444466; font-size: 0.88rem; margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
-            <div>
-                <span class="title neon-text"><i class="fas fa-shield-alt"></i> Cyber-Twin Router</span>
-                <span style="margin-left: 12px; color: #8899bb;">Blockchain • IoT • Honeypot • Digital Twin</span>
-            </div>
-            
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span id="statusBadge" class="status-badge">
-                    <span class="live-dot"></span>
-                    LIVE
-                </span>
-                
-                <button onclick="manualRefresh()" class="refresh-btn">
-                    <i class="fas fa-sync"></i> Refresh Now
-                </button>
-                
-                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: #ccc;">
-                    <input type="checkbox" id="autoRefresh" checked onchange="toggleAutoRefresh()">
-                    Auto-refresh (5s)
-                </label>
-            </div>
+
+<!-- ── Navbar ── -->
+<div class="navbar">
+    <div style="display:flex; justify-content:space-between; align-items:center; max-width:1400px; margin:0 auto;">
+        <div>
+            <span class="title"><i class="fas fa-shield-alt"></i> Cyber-Twin Router</span>
+            <span style="margin-left:12px; color:#8899bb; font-size:0.9rem;">
+                Blockchain • IoT • Honeypot • Digital Twin
+            </span>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+            <span id="statusBadge" class="status-badge">
+                <span class="live-dot"></span>
+                <span id="liveLabel">LIVE</span>
+            </span>
+            <button onclick="manualRefresh()" class="btn btn-primary">
+                <i class="fas fa-sync" id="spinIcon"></i> Refresh
+            </button>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:#ccc; font-size:0.9rem;">
+                <input type="checkbox" id="autoRefresh" checked onchange="toggleAutoRefresh()">
+                Auto (5s)
+            </label>
         </div>
     </div>
+</div>
 
-    <div class="card">
-        <h2 style="margin: 0 0 15px 0; color: var(--accent); font-size: 1.4rem;">
-            📍 Contract Information
-        </h2>
-        <p><strong>Contract Address:</strong> <code id="contractAddr">{{ contract_address }}</code></p>
-        <p><strong>Blockchain Status:</strong> <span id="statusText">{{ status }}</span></p>
+<!-- ── Stat bar ── -->
+<div class="stat-bar" style="margin-top:20px;">
+    <div class="stat-box">
+        <div class="stat-label">Events on chain</div>
+        <div class="stat-value" id="statEvents">{{ event_count }}</div>
     </div>
+    <div class="stat-box">
+        <div class="stat-label">Block height</div>
+        <div class="stat-value accent" id="statBlock">{{ block_number }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Contract</div>
+        <div class="stat-value accent" id="statContract" style="font-size:0.95rem; margin-top:6px;">
+            {{ contract_address }}
+        </div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Last refresh</div>
+        <div class="stat-value warn" id="statRefresh" style="font-size:1rem; margin-top:6px;">Just now</div>
+    </div>
+</div>
 
-    <div class="card">
-        <h2 style="margin: 0 0 15px 0; color: var(--accent); font-size: 1.4rem;">
-            📡 Live Cyber Events & IoT Attacks
-        </h2>
-        <table>
-            <thead>
+<!-- ── Error bar ── -->
+<div class="error-bar {% if fetch_error %}show{% endif %}" id="errorBar">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span id="errorText">{{ fetch_error }}</span>
+    &nbsp;|&nbsp;
+    <a href="/debug" target="_blank" style="color:#ff9999;">Open /debug for details</a>
+</div>
+
+<!-- ── Status card ── -->
+<div class="card">
+    <h2 style="margin:0 0 12px; color:var(--accent); font-size:1.25rem;">
+        <i class="fas fa-network-wired"></i> System Status
+    </h2>
+    <div style="display:flex; gap:30px; flex-wrap:wrap; font-size:0.95rem;">
+        <div>
+            <span style="color:#667799;">Blockchain: </span>
+            <span id="statusText">{{ status }}</span>
+        </div>
+        <div>
+            <span style="color:#667799;">Debug: </span>
+            <a href="/debug" target="_blank" style="color:var(--accent);">
+                /debug endpoint <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ── Events table ── -->
+<div class="card">
+    <h2 style="margin:0 0 15px; color:var(--accent); font-size:1.25rem;">
+        <i class="fas fa-satellite-dish"></i>
+        Live Cyber Events &amp; IoT Attacks
+        <span id="eventCountBadge" style="margin-left:10px; font-size:0.8rem;
+              background:rgba(0,255,157,0.12); color:var(--primary);
+              padding:3px 12px; border-radius:20px; font-weight:600;">
+            {{ event_count }} events
+        </span>
+    </h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Event Type</th>
+                <th>Attacker IP</th>
+                <th>IoT Device</th>
+                <th>Details</th>
+                <th>Block</th>
+                <th>Tx Hash</th>
+            </tr>
+        </thead>
+        <tbody id="eventsTable">
+            {% if events %}
+                {% for e in events %}
                 <tr>
-                    <th>Timestamp</th>
-                    <th>Event Type</th>
-                    <th>Attacker IP</th>
-                    <th>IoT Device</th>
-                    <th>Details</th>
-                    <th>Tx Hash</th>
-                </tr>
-            </thead>
-            <tbody id="eventsTable">
-                {% for event in events %}
-                <tr>
-                    <td>{{ event.timestamp }}</td>
-                    <td><strong>{{ event.eventType }}</strong></td>
-                    <td>{{ event.attackerIP }}</td>
-                    <td>{{ event.iotDevice }}</td>
-                    <td>{{ event.details }}</td>
-                    <td><code>{{ event.txHash }}</code></td>
+                    <td style="color:#8899bb; font-size:0.85rem;">{{ e.timestamp }}</td>
+                    <td>{{ e.eventType | eventBadge | safe }}</td>
+                    <td><code style="font-size:0.82rem;">{{ e.attackerIP }}</code></td>
+                    <td>{{ e.iotDevice }}</td>
+                    <td style="color:#9999bb; font-size:0.88rem;">{{ e.details }}</td>
+                    <td style="color:#556677;">#{{ e.block }}</td>
+                    <td><code style="font-size:0.78rem;">{{ e.txHash }}</code></td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% else %}
+                <tr id="emptyRow">
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <div class="big-icon">📡</div>
+                            <div style="font-size:1rem; color:#8899bb; margin-bottom:8px;">
+                                No events yet — blockchain is connected and waiting
+                            </div>
+                            <div style="font-size:0.88rem;">
+                                Run the attack simulator in WSL:<br><br>
+                                <code>source .venv/bin/activate</code><br><br>
+                                <code>python3 scripts/simulate-iot-attack.py</code><br><br>
+                                <span style="color:#556677;">or use the wrapper:</span>
+                                <code>./run-demo.sh</code>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
 
-    <div class="footer">
-        Master's End-Semester Project 2026 • Digital Twin Router + IoT Sensors + Honeypot + Blockchain + Cloud Platform<br>
-        Last updated: <span id="lastUpdated">Just now</span>
-    </div>
+<div class="footer">
+    Master's End-Semester Project 2026 &nbsp;•&nbsp;
+    Digital Twin Router + IoT + Honeypot + Blockchain + Cloud
+</div>
 
-    <script>
-        let autoRefreshInterval = null;
+<script>
+const BADGE_COLORS = {
+    BruteForce:     'badge-red',
+    DDoS:           'badge-red',
+    Ransomware:     'badge-red',
+    ZeroDayExploit: 'badge-red',
+    PortScan:       'badge-orange',
+    FirmwareTamper: 'badge-orange',
+    C2Beacon:       'badge-orange',
+    MQTTInject:     'badge-blue',
+    MITM:           'badge-blue',
+    SQLInjection:   'badge-purple',
+    CredHarvest:    'badge-purple',
+    DataExfil:      'badge-purple',
+};
 
-        function toggleAutoRefresh() {
-            if (document.getElementById('autoRefresh').checked) {
-                autoRefreshInterval = setInterval(manualRefresh, 5000);
-            } else {
-                clearInterval(autoRefreshInterval);
+function eventBadge(type) {
+    const cls = BADGE_COLORS[type] || 'badge-green';
+    return `<span class="badge ${cls}">${type}</span>`;
+}
+
+let autoInterval = null;
+let prevCount    = {{ event_count }};
+let refreshing   = false;
+
+function toggleAutoRefresh() {
+    clearInterval(autoInterval);
+    if (document.getElementById('autoRefresh').checked) {
+        autoInterval = setInterval(manualRefresh, 5000);
+    }
+}
+
+function manualRefresh() {
+    if (refreshing) return;
+    refreshing = true;
+    const icon = document.getElementById('spinIcon');
+    icon.classList.add('fa-spin');
+
+    fetch('/events')
+        .then(r => r.json())
+        .then(data => {
+            // Status text
+            const connected = data.status === 'connected';
+            document.getElementById('statusText').innerHTML = connected
+                ? '<span style="color:#00ff9d">🟢 Blockchain Connected • Real-time</span>'
+                : '<span style="color:#ffaa00">⚠️ Waiting for contract deployment...</span>';
+
+            // Stat bar
+            document.getElementById('statEvents').textContent = data.event_count ?? 0;
+            document.getElementById('statBlock').textContent  = data.block_number ?? 0;
+            if (data.contract && data.contract !== 'not deployed') {
+                document.getElementById('statContract').textContent =
+                    data.contract.slice(0,14) + '...';
             }
-        }
+            document.getElementById('statRefresh').textContent = new Date().toLocaleTimeString();
 
-        function manualRefresh() {
-            fetch('/events')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('statusText').innerHTML = 
-                        data.status === 'connected' ? 
-                        '<span style="color:#00ff9d">🟢 Blockchain Connected • Real-time</span>' : 
-                        '<span style="color:#ffaa00">⚠️ Waiting for contract deployment...</span>';
-                    
-                    let html = '';
-                    if (data.events && data.events.length > 0) {
-                        data.events.forEach(event => {
-                            html += `
-                                <tr>
-                                    <td>${event.timestamp}</td>
-                                    <td><strong>${event.eventType}</strong></td>
-                                    <td>${event.attackerIP}</td>
-                                    <td>${event.iotDevice}</td>
-                                    <td>${event.details}</td>
-                                    <td><code>${event.txHash}</code></td>
-                                </tr>`;
-                        });
-                    } else {
-                        html = `<tr><td colspan="6" style="text-align:center; padding:40px; color:#666;">No events yet.<br>Run <code>python scripts/simulate-iot-attack.py</code> to generate live logs</td></tr>`;
-                    }
-                    document.getElementById('eventsTable').innerHTML = html;
-                    document.getElementById('lastUpdated').textContent = 'Just now';
-                })
-                .catch(() => {
-                    document.getElementById('statusText').innerHTML = '❌ Connection error';
+            // Error bar
+            const errBar  = document.getElementById('errorBar');
+            const errText = document.getElementById('errorText');
+            if (data.error) {
+                errText.textContent = data.error;
+                errBar.classList.add('show');
+            } else {
+                errBar.classList.remove('show');
+            }
+
+            // Event count badge
+            document.getElementById('eventCountBadge').textContent =
+                `${data.event_count ?? 0} events`;
+
+            // Table rows
+            const tbody = document.getElementById('eventsTable');
+            const newCount = (data.events || []).length;
+
+            if (!data.events || data.events.length === 0) {
+                tbody.innerHTML = `<tr id="emptyRow"><td colspan="7">
+                    <div class="empty-state">
+                        <div class="big-icon">📡</div>
+                        <div style="font-size:1rem;color:#8899bb;margin-bottom:8px;">
+                            No events yet — blockchain is connected and waiting
+                        </div>
+                        <div style="font-size:0.88rem;">
+                            Run: <code>source .venv/bin/activate && python3 scripts/simulate-iot-attack.py</code>
+                        </div>
+                    </div></td></tr>`;
+            } else {
+                let html = '';
+                data.events.forEach((e, i) => {
+                    const isNew = i < (newCount - prevCount) && newCount > prevCount;
+                    html += `<tr class="${isNew ? 'new-row' : ''}">
+                        <td style="color:#8899bb;font-size:.85rem;">${e.timestamp}</td>
+                        <td>${eventBadge(e.eventType)}</td>
+                        <td><code style="font-size:.82rem;">${e.attackerIP}</code></td>
+                        <td>${e.iotDevice}</td>
+                        <td style="color:#9999bb;font-size:.88rem;">${e.details}</td>
+                        <td style="color:#556677;">#${e.block ?? '-'}</td>
+                        <td><code style="font-size:.78rem;">${e.txHash}</code></td>
+                    </tr>`;
                 });
-        }
+                tbody.innerHTML = html;
+                prevCount = newCount;
+            }
+        })
+        .catch(err => {
+            document.getElementById('statusText').innerHTML =
+                `<span style="color:#ff4444">❌ Connection error: ${err}</span>`;
+        })
+        .finally(() => {
+            icon.classList.remove('fa-spin');
+            refreshing = false;
+        });
+}
 
-        window.onload = () => {
-            manualRefresh();
-            toggleAutoRefresh();
-        };
-    </script>
+window.onload = () => {
+    manualRefresh();
+    toggleAutoRefresh();
+};
+</script>
 </body>
 </html>
