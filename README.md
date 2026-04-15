@@ -1,11 +1,10 @@
 # 🚀 Cyber-Twin Router
 
 **Digital Twin Router + IoT Simulation + Honeypot + Blockchain Logging + Cloud Real-Time Attack Dashboard**
-                  **100% software-only • No hardware • Windows/Ubuntu + WSL2 ready**
 
-A complete cybersecurity demonstration platform built as a Master's End-Semester Project (2026). Simulate a smart router environment with IoT devices, a deceptive honeypot, tamper-proof blockchain logging, and live cyber-attack scenarios — all running locally .
+A complete cybersecurity demonstration platform built as a Master's End-Semester Project (2026). Simulating a smart router environment with IoT devices, A honeypot to act as a decoy system—designed to look like a legitimate, valuable target—to attract, lure, detect, and analyze malicious attackers, with a tamper-proof blockchain logging and live cyber-attack scenarios —> all running locally .
 
-![Cyber-Twin Router Dashboard](https://github.com/0xc1GenZ/Cyber-Twin-Router/raw/main/screenshots/dashboard-live.png)
+![Cyber-Twin Router Dashboard] <img width="1919" height="936" alt="Image" src="https://github.com/user-attachments/assets/f4fddd8f-8c89-4694-a8f4-afcdb45bab5e" />
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.12-blue)](https://www.python.org/)
@@ -19,9 +18,8 @@ A complete cybersecurity demonstration platform built as a Master's End-Semester
 - **IoT Device Simulation** — Multiple sensors publishing via MQTT
 - **Honeypot SSH** — Realistic Cowrie honeypot (ports 2222/2323)
 - **Blockchain Logging** — Tamper-proof CyberLogger smart contract on Ganache
-- **Real-Time Dashboard** — Beautiful live web UI with Server-Sent Events (SSE)
+- **Real-Time Dashboard** — Live Web UI with Server-Sent Events (SSE)
 - **Continuous Attack Simulator** — 12+ realistic IoT attacks with instant dashboard updates
-- **One-Click Start** — Works perfectly on Windows 11 via `start.bat`
 
 ## 🎥 Live Demo Video
 
@@ -33,8 +31,8 @@ Watch the full demo (recommended):
 
 ## 🚀 Quick Start (Super Simple)
 
-### Option 1: Windows One-Click (Recommended)
-1. Double-click **`start.bat`** in the project folder
+### Option 1: Windows 
+1. Double-click **`run.bat`** in the project folder
 2. Wait 30–60 seconds
 3. Your browser will automatically open the live dashboard at `http://localhost:5000`
 
