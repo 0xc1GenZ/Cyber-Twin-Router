@@ -28,30 +28,6 @@ A complete cybersecurity demonstration platform built as a Master's End-Semester
 - **Real-Time Dashboard** — Live Web UI with Server-Sent Events (SSE)
 - **Continuous Attack Simulator** — 12+ realistic IoT attacks with instant dashboard updates
 
-## 🎥 Live Demo Video
+## 🎥 Live 🔴REC Video! 
 
-Watch the full demo (recommended):
-
-[![Watch Demo Video](https://img.youtube.com/vi/PLACEHOLDER/0.jpg)](https://youtu.be/PLACEHOLDER)
-
-*(Replace with your actual YouTube link after uploading a 60–90 second screen recording showing the dashboard with live attacks rolling in)*
-
-🛠️ Tech Stack
-Backend: Python 3.12 + Flask + Web3.py
-IoT: MQTT (Eclipse Mosquitto)
-Blockchain: Ganache + Solidity Smart Contract
-Honeypot: Cowrie SSH Honeypot
-Router: FRRouting (FRR) Docker image
-Containerization: Docker Compose + WSL 2
-Real-time: Server-Sent Events (SSE)
-
-## 🚀 Quick Start (Super Simple)
-
-### Option 1: Windows 
-1. Double-click **`run.bat`** in the project folder
-2. Wait 30–60 seconds
-3. Your browser will automatically open the live dashboard at `http://localhost:5000`
-
-### Option 2: Docker Command (Any OS)
-```bash
-docker compose up -d --build
+https://github.com/user-attachments/assets/9ea77ac1-8684-4d1d-a7b2-13e74bf754a7
