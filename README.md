@@ -9,7 +9,7 @@
 
 **Digital Twin Router + IoT Simulation + Honeypot + Blockchain Logging + Cloud Real-Time Attack Dashboard**
 
-A complete cybersecurity demonstration platform built as a Master's End-Semester Project (2026). Simulating a smart router environment with IoT devices, A honeypot to act as a decoy system designed to look like a legitimate, valuable target to lure, detect, and analyze malicious attackers, with a tamper-proof blockchain logging and live cyber-attack scenarios —> all running locally .
+A complete cybersecurity demonstration platform built as a Master's End-Semester Project (2026). Simulating a smart router environment with IoT devices, A honeypot to act as a decoy system designed to look like a legitimate, valuable target to lure, detect, and analyze malicious attackers, with a tamper-proof blockchain logging and live cyber-attack scenarios all running locally .
 
 ![Cyber-Twin Router Dashboard] <img width="1919" height="936" alt="Image" src="https://github.com/user-attachments/assets/f4fddd8f-8c89-4694-a8f4-afcdb45bab5e" />
 
