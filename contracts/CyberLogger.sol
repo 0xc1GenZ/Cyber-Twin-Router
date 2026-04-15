@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 contract CyberLogger {
     event CyberEvent(
@@ -7,7 +6,8 @@ contract CyberLogger {
         string eventType,
         string attackerIP,
         string iotDevice,
-        string details
+        string details,
+        string txHash
     );
 
     function logEvent(
@@ -16,6 +16,14 @@ contract CyberLogger {
         string memory iotDevice,
         string memory details
     ) public {
-        emit CyberEvent(block.timestamp, eventType, attackerIP, iotDevice, details);
+        // Emit the event with real data
+        emit CyberEvent(
+            block.timestamp,
+            eventType,
+            attackerIP,
+            iotDevice,
+            details,
+            "0x" // txHash is filled by the simulator after the tx
+        );
     }
 }
