@@ -1,0 +1,96 @@
+// Cyber-Twin Router — NodeMCU Firmware v1.0
+// Sends real DHT11 + PIR data to your MQTT broker
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+#include <DHT.h>
+#include <ArduinoJson.h>
+
+// ── CHANGE THESE ─────────────────────────────
+const char* WIFI_SSID   = "THIRD FLOOR";     // your WiFi SSID
+const char* WIFI_PASS   = "7731838537";     // your WiFi password
+const char* MQTT_SERVER = "192.168.0.101";     // your laptop's IP (ipconfig in cmd)
+const int   MQTT_PORT   =  1883;
+const char* DEVICE_ID   = "IoT-Node-01";     // unique per board
+// ──────────────────────────────────────────────
+
+#define DHT_PIN  D4
+#define PIR_PIN  D5
+#define DHT_TYPE DHT11
+
+DHT dht(DHT_PIN, DHT_TYPE);
+WiFiClient espClient;
+PubSubClient mqtt(espClient);
+
+unsigned long lastSend = 0;
+bool pirLastState = false;
+
+void connectWiFi() {
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  Serial.print("Connecting WiFi");'ok'
+  while (WiFi.status() != WL_CONNECTED) { delay(500); Serial.print("."); }
+  Serial.println("\n✓ WiFi: " + WiFi.localIP().toString());
+}
+
+void connectMQTT() {
+  while (!mqtt.connected()) {
+    Serial.print("Connecting MQTT...");
+    if (mqtt.connect(DEVICE_ID)) {
+      Serial.println(" connected");
+    } else {
+      Serial.println(" failed, retry 3s"); delay(3000);
+    }
+  }
+}
+
+void publishSensor() {
+  float temp = dht.readTemperature();
+  float hum  = dht.readHumidity();
+  if (isnan(temp) || isnan(hum)) return;
+
+  StaticJsonDocument<200> doc;
+  doc["device"]    = DEVICE_ID;
+  doc["temp"]      = temp;
+  doc["humidity"]  = hum;
+  doc["attack"]    = "SensorReading";
+  doc["attackerIP"]= WiFi.localIP().toString();
+  doc["timestamp"] = millis() / 1000;
+
+  char buf[200]; serializeJson(doc, buf);
+  mqtt.publish("iot/sensor-01/data", buf);
+  Serial.printf("📡 Sent: %.1f°C  %.0f%%\n", temp, hum);
+}
+
+void checkPIR() {
+  bool motion = digitalRead(PIR_PIN);
+  if (motion && !pirLastState) {          // rising edge only
+    StaticJsonDocument<200> doc;
+    doc["device"]    = DEVICE_ID;
+    doc["attack"]    = "MotionDetected";
+    doc["attackerIP"]= WiFi.localIP().toString();
+    doc["details"]   = "Physical intrusion detected by PIR";
+    doc["timestamp"] = millis() / 1000;
+
+    char buf[200]; serializeJson(doc, buf);
+    mqtt.publish("iot/sensor-01/data", buf);
+    Serial.println("🚨 MOTION DETECTED → MQTT published");
+  }
+  pirLastState = motion;
+}
+
+void setup() {
+  Serial.begin(57600);
+  pinMode(PIR_PIN, INPUT);
+  dht.begin();
+  mqtt.setServer(MQTT_SERVER, MQTT_PORT);
+  connectWiFi();
+  connectMQTT();
+}
+void loop() {
+  if (!mqtt.connected()) connectMQTT();
+  mqtt.loop();
+  checkPIR();
+  if (millis() - lastSend > 5000) {   // every 5 seconds
+    publishSensor();
+    lastSend = millis();
+  }
+}
