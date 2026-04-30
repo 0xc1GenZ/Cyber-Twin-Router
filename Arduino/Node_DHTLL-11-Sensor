@@ -6,9 +6,9 @@
 #include <ArduinoJson.h>
 
 // ── CHANGE THESE ─────────────────────────────
-const char* WIFI_SSID   = "THIRD FLOOR";     // your WiFi SSID
-const char* WIFI_PASS   = "7731838537";     // your WiFi password
-const char* MQTT_SERVER = "192.168.0.101";     // your laptop's IP (ipconfig in cmd)
+const char* WIFI_SSID   = "";     // your WiFi SSID
+const char* WIFI_PASS   = "";     // your WiFi password
+const char* MQTT_SERVER = "192.168.X.X";     // your laptop's IP (ipconfig in cmd)
 const int   MQTT_PORT   =  1883;
 const char* DEVICE_ID   = "IoT-Node-01";     // unique per board
 // ──────────────────────────────────────────────
