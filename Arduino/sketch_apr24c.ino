@@ -21,9 +21,9 @@
 // ════════════════════════════════════════════════════════════
 //  ❶  The name of the ssid,psswd & Ipaddr
 // ════════════════════════════════════════════════════════════
-const char* WIFI_SSID      = "THIRD FLOOR";
-const char* WIFI_PASS      = "7731838537";
-const char* MQTT_SERVER    = "192.168.0.101";   // your laptop IP
+const char* WIFI_SSID      = "";
+const char* WIFI_PASS      = "";
+const char* MQTT_SERVER    = "192.168.X.X";   // your laptop IP
 // ════════════════════════════════════════════════════════════
 
 // ── Identity ─────────────────────────────────────────────────
