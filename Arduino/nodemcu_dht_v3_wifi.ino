@@ -21,8 +21,8 @@
 // ════════════════════════════════════════════════════════════
 //  ❶  WiFi + Broker — same as Node #2
 // ════════════════════════════════════════════════════════════
-const char* WIFI_SSID   = "THIRD FLOOR";
-const char* WIFI_PASS   = "7731838537";
+const char* WIFI_SSID   = "WhyFi";
+const char* WIFI_PASS   = "YOUR WIFI PSSWD HERE";
 const char* MQTT_SERVER = "192.168.0.101";
 const int   MQTT_PORT   = 1883;
 
